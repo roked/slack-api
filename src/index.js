@@ -1,18 +1,21 @@
+//import of slack web api package
 import pkg from '@slack/web-api';
 
+//get the webclient function from the pkg
 const {WebClient} = pkg;
 
 // Read a token from the environment variables
 const slackToken = process.env.BOT_TOKEN;
 
 // Initialize
-const web = new WebClient(slackToken);
+const web = new WebClient(slackToken)
+
+//the test channel
 const channelId = 'slack-api';
 
 (async () => {
 
     // Post a message to the channel, and await the result.
-    // Find more arguments and details of the response: https://api.slack.com/methods/chat.postMessage
     const result = await web.chat.postMessage({
         text: 'Hello world!',
         channel: channelId,

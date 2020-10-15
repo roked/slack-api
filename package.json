@@ -6,16 +6,19 @@
   "license": "ISC",
   "type": "module",
   "scripts": {
-    "start": "node bin/server.js"
+    "start": "node server.js"
   },
   "dependencies": {
-    "cookie-parser": "~1.4.4",
+    "@slack/events-api": "2.3.4",
+    "@slack/web-api": "5.12.0",
+    "body-parser": "^1.19.0",
+    "config": "^3.3.2",
     "debug": "~2.6.9",
     "ejs": "~2.6.1",
     "express": "~4.16.1",
-    "http-errors": "~1.6.3",
+    "express-gateway": "^1.16.10",
+    "http-proxy": "^1.18.1",
     "morgan": "~1.9.1",
-    "@slack/web-api": "5.12.0",
-    "@slack/events-api": "2.3.4"
+    "tracer": "^1.1.3"
   }
 }
