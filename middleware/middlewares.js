@@ -7,7 +7,7 @@ const {WebClient} = pkg;
 
 //Read a token from the environment variables
 //TODO - remove token from here ( it can't be sore in .env when using Webstorm )
-const slackToken = process.env.SLACK_TOKEN || 'xoxb-1455276216688-1431663829427-q3gCAw3CQ3dIfgaJwIgojyY1';
+const slackToken = process.env.SLACK_TOKEN || 'xoxb-';
 console.log(slackToken)
 
 //Initialize web client
