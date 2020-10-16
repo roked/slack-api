@@ -1,8 +1,9 @@
 import express from 'express';
+import { channelValidation } from '../../middleware/middlewares.js'
 
 let app = express();
 
-app.get('/channels', (req, res) => {
+app.get('/channels', channelValidation, (req, res) => {
     res.status(200).send(["Add new channel"]);
 })
 
