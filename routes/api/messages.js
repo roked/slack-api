@@ -1,8 +1,9 @@
 import express from 'express';
-import { sendMessageToSelectedChannels } from '../../middleware/middlewares.js'
+import {sendMessageToSelectedChannel, sendMessageToAllChannels} from '../../middleware/middlewares.js'
+
 let app = express();
 
-app.get('/messages', sendMessageToSelectedChannels, (req, res) => {
+app.get('/messages', sendMessageToAllChannels, (req, res) => {
     res.status(200).send(["A message was sent!"]);
 })
 
