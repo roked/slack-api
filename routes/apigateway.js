@@ -1,12 +1,12 @@
-import express from "express";
-import httpProxy from 'http-proxy';
+import path, {dirname} from 'path';
+import gateway from 'express-gateway';
+import './api/messages.js';
+import './api/channels.js';
+import {fileURLToPath} from "url";
 
-const router = express.Router();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
-const apiProxy = httpProxy.createProxyServer({target:'http://localhost:9000'});
-
-router.get("/", function(req, res){
-    apiProxy.web(req, res, { target: 'https://stackoverflow.com/questions/37399964/node-express-api-gateway' });
-});
-
-export default router;
+gateway()
+    .load(path.join(__dirname, '../config'))
+    .run();

@@ -6,7 +6,7 @@
   "license": "ISC",
   "type": "module",
   "scripts": {
-    "start": "node server.js"
+    "start": "node routes/apigateway.js"
   },
   "dependencies": {
     "@slack/events-api": "2.3.4",

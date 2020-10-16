@@ -1,8 +1,8 @@
-import express from  'express';
+import express from 'express';
 
 let app = express();
 
-app.get('/channels', (req, res, next) => {
+app.get('/channels', (req, res) => {
     res.status(200).send(["Add new channel"]);
 })
 
