@@ -3,7 +3,7 @@ import {sendMessageToSelectedChannel, sendMessageToAllChannels} from '../../midd
 
 let app = express();
 
-app.get('/messages', sendMessageToAllChannels, (req, res) => {
+app.get('/messages', sendMessageToSelectedChannel, (req, res) => {
     res.status(200).send(["A message was sent!"]);
 })
 

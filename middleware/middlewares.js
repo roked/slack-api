@@ -7,7 +7,7 @@ const {WebClient} = pkg;
 
 //Read a token from the environment variables
 //TODO - remove token from here ( it can't be sore in .env when using Webstorm )
-const slackToken = process.env.SLACK_TOKEN || 'xoxb-';
+const slackToken = process.env.SLACK_TOKEN || 'xoxb-1455276216688-1431663829427-q3gCAw3CQ3dIfgaJwIgojyY1';
 console.log(slackToken)
 
 //Initialize web client
@@ -19,7 +19,7 @@ const web = new WebClient(slackToken)
 
 //this middleware will get the selected channel and send a message
 //it will confirm if channel is valid using 'channelValidator' middleware
-//TODO - add a send file option
+//TODO - add a send attachments option
 export async function sendMessageToSelectedChannel(req, res, next) {
     //user selected channel
     const {channel} = req.query;
@@ -29,7 +29,7 @@ export async function sendMessageToSelectedChannel(req, res, next) {
         const {message} = req.query;
         console.log(message)
 
-        //TODO - send all files also
+        //TODO - send attachments also
         //send the message to that specific channel (declared at the bottom of the file)
         await sendMessage(message, channel);
         await next;
@@ -41,7 +41,7 @@ export async function sendMessageToSelectedChannel(req, res, next) {
 }
 
 //this middleware will get all channels linked to the user and send a message
-//TODO - add a send file option
+//TODO - add a send attachments option
 export async function sendMessageToAllChannels(req, res, next) {
 
     //get business (using the name from req.query)
@@ -59,7 +59,7 @@ export async function sendMessageToAllChannels(req, res, next) {
         const allChannelsName = business[0].channels;
 
         //loop to send the message in every channel in param - selectedChannelsId
-        //TODO - send all files also
+        //TODO - send attachments also
         try{
             for(const channel of allChannelsName){
                 //Get the message from the req.params
@@ -195,7 +195,8 @@ async function sendMessage(message, channel) {
         //post a message to the channel then work with the promise
         await web.chat.postMessage({
             text: message,
-            channel: channel
+            channel: channel,
+            attachments: [{"pretext": "pre-hello", "text": "text-world"}]
         }).then(result => {
             // The result contains an identifier for the message, `ts`.
             console.log(`Successfully send message ${result.ts} in conversation ${channel}`);

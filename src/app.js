@@ -4,8 +4,6 @@ import express           from 'express';
 import logger            from 'morgan';
 import path              from 'path';
 import bodyparser        from 'body-parser'
-// import config            from 'config';
-// import http              from 'http';
 
 const app = express();
 
