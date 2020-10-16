@@ -1,0 +1,79 @@
+{
+  "http": {
+    "port": 8080
+  },
+  "admin": {
+    "port": 9876,
+    "host": "localhost"
+  },
+  "apiEndpoints": {
+    "channels": {
+      "host": "localhost",
+      "paths": [
+        "/channels",
+        "/channels/*"
+      ]
+    },
+    "messages": {
+      "host": "localhost",
+      "paths": [
+        "/messages",
+        "/messages/*"
+      ]
+    }
+  },
+  "serviceEndpoints": {
+    "channelsService": {
+      "url": "http://localhost:3000"
+    },
+    "messagesService": {
+      "url": "http://localhost:8000"
+    }
+  },
+  "policies": [
+    "basic-auth",
+    "cors",
+    "expression",
+    "key-auth",
+    "log",
+    "oauth2",
+    "proxy",
+    "rate-limit"
+  ],
+  "pipelines": {
+    "channelPipeline": {
+      "apiEndpoints": [
+        "channels"
+      ],
+      "policies": [
+        {
+          "proxy": [
+            {
+              "action": {
+                "serviceEndpoint": "channelsService",
+                "changeOrigin": true
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "messagePipeline": {
+      "apiEndpoints": [
+        "messages"
+      ],
+      "policies": [
+        {
+          "proxy": [
+            {
+              "action": {
+                "serviceEndpoint": "messagesService",
+                "changeOrigin": true
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
