@@ -52,9 +52,9 @@ Address on which the gate takes calls: ```localhost:8080```
      * 'attachment' is optional and must be A JSON-based array of structured attachments.
 
 3. ##### Map a new channel to an existing business
-    ```/channel?id={id}&channel={slackchannel}```
+   ```/channel?id={id}&channel={slackchannel}```
     * 'id' must be a valid business ID.
     * 'slackchannel' must be the name of a channel to be linked with the business ID.
-
+    
 ## Important
 If you do not have a business ID you can call ```/channel?channel={slackchannel}``` and a new ID will be returned.
