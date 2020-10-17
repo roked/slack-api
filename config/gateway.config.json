@@ -2,23 +2,18 @@
   "http": {
     "port": 8080
   },
-  "admin": {
-    "port": 9876,
-    "host": "localhost"
-  },
   "apiEndpoints": {
     "channels": {
       "host": "localhost",
       "paths": [
-        "/channels",
-        "/channels/*"
+        "/channel"
       ]
     },
     "messages": {
       "host": "localhost",
       "paths": [
-        "/messages",
-        "/messages/*"
+        "/message",
+        "/message/:id"
       ]
     }
   },
@@ -27,7 +22,7 @@
       "url": "http://localhost:3000"
     },
     "messagesService": {
-      "url": "http://localhost:8000"
+      "url": "http://localhost:3333"
     }
   },
   "policies": [

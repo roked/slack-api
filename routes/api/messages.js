@@ -1,12 +1,21 @@
+/**
+ * @description This js file contains all endpoints responsible for posting a message
+ * @description Using 'express'
+ * @author Mitko Donchev
+ */
 import express from 'express';
-import {sendMessageToSelectedChannel, sendMessageToAllChannels} from '../../middleware/middlewares.js'
+//import the middlewares
+import {channelValidation, sendMessageToSelectedChannel, sendMessageToAllChannels} from '../../middleware/middlewares.js'
 
 let app = express();
 
-app.get('/messages', sendMessageToSelectedChannel, (req, res) => {
-    res.status(200).send(["A message was sent!"]);
-})
+//On this endpoint a message (and attachment) will be sent to selected channel
+app.get('/message', channelValidation, sendMessageToSelectedChannel);
 
-app.listen(8000, () => {
-    console.log('Server running on 8000');
+//On this endpoint a message (and attachment) will be sent to all channels linked to the business ID
+app.get('/message/:id', sendMessageToAllChannels);
+
+//run the server on port 3333
+app.listen(3333, () => {
+    console.log('Server running on 3333');
 })
