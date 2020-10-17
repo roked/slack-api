@@ -11,7 +11,7 @@ const {WebClient} = pkg;
 
 //Read the slack bot token from the environment variables
 //TODO - remove token from here ( it can't be sore in .env when using Webstorm )
-const slackToken = process.env.SLACK_TOKEN || 'slack-bot-token';
+const slackToken = process.env.SLACK_TOKEN || 'xoxb-1455276216688-1431663829427-7Jd4LoW7HNi21XbtAk8mMIY5';
 
 //Initialize web client
 const web = new WebClient(slackToken)
@@ -90,64 +90,44 @@ export async function sendMessageToAllChannels(req, res) {
 
 //this middleware will add a channel (existing) to the DB
 //validation is done by the previous middleware attached to the same endpoint
-export async function addChannel(req, res, next) {
+export async function addChannel(req, res) {
     //channel requested to be mapped with to the business
     //get the channel name from the req.params
     const {channel} = req.query;
 
     //get business ID (get the id from req.params)
-    const {id} = req.params;
+    const {id} = req.query;
 
     //if id is empty it throws an error
     if(typeof id === 'undefined') {
-        missingID(res);
-    }
-
-    //check the DB if the business id exists
-    let business = await Business.findById(id).then().catch(() => {
-        //business id does not exist or wrong
-        missingID(res);
-    });
-
-    if(business) {
-        //get channels linked to business object and modify the array
-        const businessCh = business.channels;
-
-        //make sure no duplicates exist
-        for(const c of businessCh){
-            if(c === channel){
-                res.status(400).send("Channel is already mapped to this account. Please try again.");
-                return;
-            }
-        }
-
-        //add new channel to the old ones
-        businessCh.push(channel);
-        try{
-            await Business.findByIdAndUpdate(id, business, (err, updated) => {
-                if(err || !updated){
-                    res.status(400).send("Fail to add new channel. Please try again.")
-                    console.log(err);
-                } else {
-                    res.status(200).send("New channel successfully added.");
-                    return next;
-                }
+        //if business is undefined
+        try {
+            //add new business to the DB (declared at the bottom of the file)
+            let business = await createNewBusiness();
+            //map new channel to the business (declared at the bottom of the file)
+            await addNewChannel(business, channel).then(() => {
+                res.status(200).send(`New business successfully created. ID: ${business._id} and channel is mapped to it`);
             });
-        } catch (err) {
+        } catch(err) {
+            res.status(400).send("Fail to create new business. Please try again.");
             console.log(err);
         }
-    }
+    } else {
+        try {
+            //check the DB if the business id exists
+            const business = await Business.find({_id: id}).then().catch((err) => {
+                missingID(res, err);
+            });
 
-    //TODO - add new business and share id to the code if needed
-    //ifbusiness is undefined
-    //add new business to the DB (declared at the bottom of the file)
-    // try {
-    //     let newBusiness = await createNewBusiness(channel, res);
-    //     res.status(200).send(`New business successfully created. ID: ${newBusiness}`);
-    // } catch(err) {
-    //     res.status(400).send("Fail to create new business. Please try again.");
-    // }
-    // await next();
+            if (business) {
+                //map new channel to the business (declared at the bottom of the file)
+                await addNewChannel(business, channel);
+                res.status(400).send("Fail to add new channel. Please try again.")
+            }
+        } catch(err) {
+            res.status(400).send("Fail to link new channel. Please try again.");
+        }
+    }
 }
 
 //======================================//
@@ -210,19 +190,46 @@ async function sendMessage(message, attachment, channel) {
 }
 
 //this function will add new Business to the DB
-async function createNewBusiness(channel) {
+async function createNewBusiness() {
     //add new business to the DB with a channel
     //init new business object from Business Model
     let newBusiness = new Business();
-    //add information to the object
-    newBusiness.channels.push(channel);
     try {
         //add new business with a channel
-        newBusiness.save().then(() => {
+        await newBusiness.save().then(() => {
             console.log(newBusiness);
-            return newBusiness;
         }).catch(err => {
             console.log(err);
+        });
+    } catch (err) {
+        console.log(err);
+    }
+
+    return newBusiness;
+}
+
+//this function will map new channel to the business
+async function addNewChannel(business, channel) {
+    //get channels linked to business object and modify the array
+    const businessCh = business.channels;
+
+    //make sure no duplicates exist
+    for (const c of businessCh) {
+        if(typeof c === 'undefined'){
+            break;
+        }
+        if (c === channel) {
+            return;
+        }
+    }
+
+    //add new channel to the old ones
+    businessCh.push(channel);
+    try {
+        await Business.findByIdAndUpdate(businessCh._id, businessCh, (err, updated) => {
+            if (err || !updated) {
+                console.log(err);
+            } else {}
         });
     } catch (err) {
         console.log(err);
@@ -230,6 +237,7 @@ async function createNewBusiness(channel) {
 }
 
 //wrong or missing ID
-function missingID(res) {
+function missingID(res, err) {
     res.status(400).send("Business ID is missing or wrong. Please try again.")
+    console.log(err);
 }

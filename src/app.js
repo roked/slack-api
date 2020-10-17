@@ -5,10 +5,10 @@
  */
 import path, {dirname} from 'path';
 import gateway from 'express-gateway';
-import mongoose from "mongoose";
-import {fileURLToPath} from "url";
-import './routes/api/messages.js';
-import './rotues/api/channels.js';
+import mongoose from 'mongoose';
+import {fileURLToPath} from 'url';
+import '../routes/api/messages.js';
+import '../routes/api/channels.js';
 
 //fileURLToPath() function ensures the correct decoding of percent-encoded
 // characters as well as ensuring a cross-platform valid absolute path string.
@@ -34,4 +34,4 @@ mongoose.connect(connectUri, {
 
 //Run the gateway combining the two services and using the config file
 //Please check /config/gateway.config.json for the set up
-gateway().load(path.join(__dirname, './config')).run();
+gateway().load(path.join(__dirname, '../config')).run();

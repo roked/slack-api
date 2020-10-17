@@ -6,7 +6,7 @@ Based on some events that happen in the back-end of the solution, a message will
 * ExpressJS
 * Official Slack API
 
-####Dependencies
+#### Dependencies
 
     "@slack/events-api": "2.3.4"
     "@slack/web-api": "5.12.0"
@@ -19,7 +19,7 @@ Based on some events that happen in the back-end of the solution, a message will
     "http-proxy": "^1.18.1"
     "mongoose": "^5.10.9"
     
-##Steps to run the backend
+## Steps to run the backend
 
 1. Install all dependencies
 2. Add to package.json:   
@@ -32,9 +32,9 @@ Based on some events that happen in the back-end of the solution, a message will
 3. Make sure MongoDB server is listening
 4. Run ```npm start```
 
-#####You are ready to rock!
+##### You are ready to rock!
 
-#Available endpoints
+# Available endpoints
 
 Address on which the gate takes calls: ```localhost:8080```
 - (```This can be modified inside /config/gateway.config.json```)
@@ -52,7 +52,9 @@ Address on which the gate takes calls: ```localhost:8080```
      * 'attachment' is optional and must be A JSON-based array of structured attachments.
 
 3. ##### Map a new channel to an existing business
-    ```/channel/{id}?channel={slackchannel}```
+    ```/channel?id={id}&channel={slackchannel}```
     * 'id' must be a valid business ID.
     * 'slackchannel' must be the name of a channel to be linked with the business ID.
-    
+
+## Important
+If you do not have a business ID you can call ```/channel?channel={slackchannel}``` and a new ID will be returned.
