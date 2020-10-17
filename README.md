@@ -56,3 +56,5 @@ Address on which the gate takes calls: ```localhost:8080```
     * 'id' must be a valid business ID.
     * 'slackchannel' must be the name of a channel to be linked with the business ID.
     
+## Important
+If you do not have a business ID you can call ```/channel?channel={slackchannel}``` and a new ID will be returned.
