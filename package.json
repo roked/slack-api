@@ -6,7 +6,7 @@
   "license": "ISC",
   "type": "module",
   "scripts": {
-    "start": "node routes/apigateway.js"
+    "start": "node app.js"
   },
   "dependencies": {
     "@slack/events-api": "2.3.4",
@@ -18,8 +18,6 @@
     "express": "~4.16.1",
     "express-gateway": "^1.16.10",
     "http-proxy": "^1.18.1",
-    "mongoose": "^5.10.9",
-    "morgan": "~1.9.1",
-    "tracer": "^1.1.3"
+    "mongoose": "^5.10.9"
   }
 }
