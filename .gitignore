@@ -215,4 +215,4 @@ nbactions.xml
 *.css.map
 
 #configuration file
-/config/models/
+#/config/models/
