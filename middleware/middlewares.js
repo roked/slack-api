@@ -120,11 +120,11 @@ export async function addChannel(req, res) {
             const business = await Business.find({_id: id}).then().catch((err) => {
                 missingID(res, err);
             });
-
             if (business) {
                 //map new channel to the business (declared at the bottom of the file)
-                await addNewChannel(business, channel);
-                res.status(400).send("Fail to add new channel. Please try again.")
+                await addNewChannel(business[0], channel).then(() => {
+                    res.status(200).send(`New channel ${channel} mapped to the Business`);
+                });
             }
         } catch(err) {
             res.status(400).send("Fail to link new channel. Please try again.");
