@@ -55,6 +55,8 @@ export async function sendMessageToAllChannels(req, res) {
         console.log(err);
     });
 
+    console.log(business)
+
     //if everything is fine
     if(business){
         //store all channels (linked to the business)
@@ -210,11 +212,8 @@ async function createNewBusiness() {
 
 //this function will map new channel to the business
 async function addNewChannel(business, channel) {
-    //get channels linked to business object and modify the array
-    const businessCh = business.channels;
-
     //make sure no duplicates exist
-    for (const c of businessCh) {
+    for (const c of business.channels) {
         if(typeof c === 'undefined'){
             break;
         }
@@ -224,9 +223,9 @@ async function addNewChannel(business, channel) {
     }
 
     //add new channel to the old ones
-    businessCh.push(channel);
+    business.channels.push(channel);
     try {
-        await Business.findByIdAndUpdate(businessCh._id, businessCh, (err, updated) => {
+        await Business.findByIdAndUpdate(business._id, business, (err, updated) => {
             if (err || !updated) {
                 console.log(err);
             } else {}
