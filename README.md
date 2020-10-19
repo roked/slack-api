@@ -19,6 +19,8 @@ Based on some events that happen in the back-end of the solution, a message will
     "http-proxy": "^1.18.1"
     "mongoose": "^5.10.9"
     
+Install all dep: ```npm install```
+    
 ## Steps to run the backend
 
 1. Install all dependencies
@@ -39,18 +41,23 @@ Based on some events that happen in the back-end of the solution, a message will
 Address on which the gate takes calls: ```localhost:8080```
 - (```This can be modified inside /config/gateway.config.json```)
 
-1. ##### Send a message to a specific channel  
+1. ##### Send a message/file to a specific channel  
+    You can send messages/files to all public channels even the app is not part of them.
+    In order to send to private channel, please first add the app to the channel.
+
     ```/message?channel={slackchannel}&message={message}&attachment={attachment}``` 
     * 'slackchannel' must be the name of a channel to send a message to.
     * 'message' must be a text - it will automatically URL-encoded.
     * 'attachment' is optional and must be A JSON-based array of structured attachments.
-
+    * to send a file, send it as multipart/form-data from input/postman
+    
 2. ##### Send a message to all channels linked to a business ID
     ```/message/{id}?message={message}&attachment={attachment}```
      * 'id' must be a valid business ID.
      * 'message' must be a text - it will automatically URL-encoded.
      * 'attachment' is optional and must be A JSON-based array of structured attachments.
-
+     * to send a file, send it as multipart/form-data from input/postman
+     
 3. ##### Map a new channel to an existing business
    ```/channel?id={id}&channel={slackchannel}```
     * 'id' must be a valid business ID.

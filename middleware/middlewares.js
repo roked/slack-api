@@ -3,15 +3,16 @@
  * @description Using '@slack/web-api' in order to access the Slack API
  * @author Mitko Donchev
  */
-import pkg      from '@slack/web-api';
-import Business from '../models/business.js';
+import pkg        from '@slack/web-api';
+import Business   from '../models/business.js';
+import fs         from 'fs';
 
 //get the webclient function from the web api
 const {WebClient} = pkg;
 
 //Read the slack bot token from the environment variables
 //TODO - remove token from here ( it can't be sore in .env when using Webstorm )
-const slackToken = process.env.SLACK_TOKEN || '';
+const slackToken = process.env.SLACK_TOKEN || 'xoxb-1455276216688-1431663829427-utgeq4KaEwI45rAhUOuweT31';
 
 //Initialize web client
 const web = new WebClient(slackToken)
@@ -27,6 +28,8 @@ export async function sendMessageToSelectedChannel(req, res, next) {
         const {channel} = req.query;  //user selected channel
         const {message} = req.query;  //message to send
         let {attachment} = req.query; //attachment
+        //get an array of al files uploaded
+        const files = req.files;
 
         //in case there is no attachments
         if(typeof attachment === 'undefined'){
@@ -35,8 +38,17 @@ export async function sendMessageToSelectedChannel(req, res, next) {
 
         //send a message (and optional attachment) to that specific channel (declared at the bottom of the file)
         await sendMessage(message, attachment, channel);
+
+        //if files array is not empty
+        if(files){
+            //send every file to the channel
+            for(const file of files){
+                await sendFiles(channel, file);
+            }
+        }
+
         await next;
-        res.status(200).send(`Message is successfully sent to ${channel}`);
+        res.status(200).send(`Message and files are successfully sent to ${channel}`);
     } catch (err) {
         //in case send message fails or channel/message is missing
         res.status(400).send("Something went wrong. Please check information provided again.");
@@ -44,10 +56,11 @@ export async function sendMessageToSelectedChannel(req, res, next) {
 }
 
 //this middleware will get all channels linked to the business ID and send a message
-export async function sendMessageToAllChannels(req, res) {
-
+export async function sendMessageToAllChannels(req, res, next) {
     //get business ID (get the id from req.params)
     const {id} = req.params;
+    //get an array of al files uploaded
+    const files = req.files;
 
     //check the DB if the business id exists
     let business = await Business.findById(id).then().catch(err => {
@@ -75,8 +88,17 @@ export async function sendMessageToAllChannels(req, res) {
                 }
                 //send the message to that specific channel (declared at the bottom of the file)
                 await sendMessage(message, attachment, channel);
+
+                //if files array is not empty
+                if(files){
+                    //send every file to the channel
+                    for(const file of files){
+                        await sendFiles(channel, file);
+                    }
+                }
             }
-            res.status(200).send("Message is successfully sent to all channels.");
+            res.status(200).send("Message and files are successfully sent to all channels.");
+            await next();
         } catch (err) {
             res.status(400).send("Something went wrong.");
         }
@@ -145,7 +167,10 @@ export async function channelValidation(req, res, next) {
     //gat a lists of all channels in a Slack team.
     let allChannels;
     try{
-        await web.conversations.list().then(channels => {
+        //set types of channels to get public and private
+        await web.conversations.list({
+            types: 'public_channel, private_channel'
+        }).then(channels => {
             //store all channels
             allChannels = channels.channels;
             console.log(`${allChannels}`);
@@ -190,6 +215,27 @@ async function sendMessage(message, attachment, channel) {
         console.log(err);
     }
 }
+
+//this function can send multiple files
+async function sendFiles(channel, file) {
+    try {
+        //post files to the channel then work with the promise
+        await web.files.upload({
+            channels: channel,
+            file: fs.createReadStream(file.path)
+        }).then(result => {
+            console.log(`../uploads/${file.filename}`);
+            // The result contains an identifier for the message, `ts`.
+            console.log(`Successfully send a file in conversation ${channel}`);
+        }).catch(err => {
+            console.log(`Bot doesn't have access to ${channel}`);
+            console.log(err);
+        });
+    } catch (err) {
+        console.log(err);
+    }
+}
+
 
 //this function will add new Business to the DB
 async function createNewBusiness() {
